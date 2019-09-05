@@ -1,0 +1,83 @@
+---
+title: "Glaser 2019"
+author: "Kmicha71"
+date: "6 8 2019"
+output:
+  html_document: 
+    keep_md: true
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Download Monthly Precipitatation Indices for Germany
+
+Use tamboRapi to inq data (take some time)
+
+```{r tambora}
+
+if (!require("devtools")) install.packages("devtools")
+library("devtools")
+devtools::install_github('tambora-org/tamboRapi')
+
+## Large chunks seem to fail
+precData1 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1500&t[ye]=1599")
+precData2 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1600&t[ye]=1699")
+precData3 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1700&t[ye]=1799")
+precData4 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1800&t[ye]=1899")
+precData5 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1900&t[ye]=2000")
+
+precData <- rbind(precData1,precData2,precData3,precData4,precData5)
+##precData <- rbind(precData, precData1,precData2,precData3,precData4,precData5)
+
+
+```
+
+## Convert to simple time series data
+
+```{r convert}
+library(dplyr)
+
+precTs <-  data.frame(precData$begin_year, precData$begin_month_id, precData$value_index)
+names(precTs)[names(precTs) == "precData.begin_year"] <- "year"
+names(precTs)[names(precTs) == "precData.begin_month_id"] <- "month"
+names(precTs)[names(precTs) == "precData.value_index"] <- "pi"
+precTs$ts <- signif(precTs$year + (precTs$month-0.5)/12, digits=6)
+precTs$time <- paste(precTs$year,precTs$month, '15 00:00:00', sep='-')
+
+distinct(precTs, year,month, .keep_all= TRUE)
+precTs <- precTs[order(precTs$ts),]
+
+```
+
+## Store as csv file
+
+```{r csv}
+write.table(precTs, file = "csv/pi_1500_2xxx_monthly.csv", append = FALSE, quote = TRUE, sep = ",",
+            eol = "\n", na = "NA", dec = ".", row.names = FALSE,
+            col.names = TRUE, qmethod = "escape", fileEncoding = "UTF-8")
+```
+
+## Plot Drought time line
+
+```{r plot, echo=TRUE}
+require("ggplot2")
+
+mp <- ggplot(precTs, aes(year, month))
+mp + geom_raster(aes(fill=pi))+
+  #theme_classic(base_size=80) +
+  theme_classic() +
+  labs(x="Year", y="Month", title="", subtitle="") +
+  scale_y_continuous(breaks=c(1,6,12))+
+  scale_x_continuous(limits=c(1500,2020)) +  
+  scale_fill_gradient2(low="#AA6010", mid="#FCF0C2", high="#23AB30",
+                       limits=c(-3,3)) +
+  theme( legend.key.width = unit(2,"cm")) +
+  guides(fill=guide_legend(title="PI", reverse = TRUE))  
+```
+
+
+
+
