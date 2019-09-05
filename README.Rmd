@@ -30,7 +30,9 @@ precData4 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1800&t[ye]=1899")
 precData5 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1900&t[ye]=2000")
 
 precData <- rbind(precData1,precData2,precData3,precData4,precData5)
-##precData <- rbind(precData, precData1,precData2,precData3,precData4,precData5)
+
+#precData0 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1530&t[ye]=1570")
+#precData <- rbind(precData, precData0)
 
 
 ```
@@ -47,7 +49,7 @@ names(precTs)[names(precTs) == "precData.value_index"] <- "pi"
 precTs$ts <- signif(precTs$year + (precTs$month-0.5)/12, digits=6)
 precTs$time <- paste(precTs$year,precTs$month, '15 00:00:00', sep='-')
 
-distinct(precTs, year,month, .keep_all= TRUE)
+precTs <- distinct(precTs, year,month, .keep_all= TRUE)
 precTs <- precTs[order(precTs$ts),]
 
 ```
