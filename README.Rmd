@@ -21,19 +21,48 @@ Use tamboRapi to inq data (take some time)
 if (!require("devtools")) install.packages("devtools")
 library("devtools")
 devtools::install_github('tambora-org/tamboRapi')
+library(dplyr)
 
-## Large chunks seem to fail
+## Large chunks seem to fail, so try some redundancy import
+
+precData0b <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1500&t[ye]=1549")
+precData0b <- distinct(precData0b, begin_year,begin_month_id, .keep_all= TRUE)
+
 precData1 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1500&t[ye]=1599")
+precData1 <- distinct(precData1, begin_year,begin_month_id, .keep_all= TRUE)
+precData1b <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1550&t[ye]=1649")
+precData1b <- distinct(precData1b, begin_year,begin_month_id, .keep_all= TRUE)
+
 precData2 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1600&t[ye]=1699")
+precData2 <- distinct(precData2, begin_year,begin_month_id, .keep_all= TRUE)
+precData2b <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1650&t[ye]=1749")
+precData2b <- distinct(precData2b, begin_year,begin_month_id, .keep_all= TRUE)
+
 precData3 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1700&t[ye]=1799")
+precData3 <- distinct(precData3, begin_year,begin_month_id, .keep_all= TRUE)
+precData3b <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1750&t[ye]=1849")
+precData3b <- distinct(precData3b, begin_year,begin_month_id, .keep_all= TRUE)
+
 precData4 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1800&t[ye]=1899")
+precData4 <- distinct(precData4, begin_year,begin_month_id, .keep_all= TRUE)
+precData4b <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1850&t[ye]=1949")
+precData4b <- distinct(precData4b, begin_year,begin_month_id, .keep_all= TRUE)
+
 precData5 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1900&t[ye]=2000")
+precData5 <- distinct(precData5, begin_year,begin_month_id, .keep_all= TRUE)
+precData5b <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1950&t[ye]=2000")
+precData5b <- distinct(precData5b, begin_year,begin_month_id, .keep_all= TRUE)
 
 precData <- rbind(precData1,precData2,precData3,precData4,precData5)
+precData <- distinct(precData, begin_year,begin_month_id, .keep_all= TRUE)
 
-#precData0 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1530&t[ye]=1570")
-#precData <- rbind(precData, precData0)
+precDataB <- rbind(precData0b,precData1b,precData2b,precData3b,precData4b,precData5b)
+precDataB <- distinct(precDataB, begin_year,begin_month_id, .keep_all= TRUE)
 
+precData0 <- tamboRapi::fromTambora("g[cid]=493&c[nd]=96&t[yb]=1500&t[ye]=2000")
+precData <- rbind(precData, precData0)
+precData <- rbind(precData, precDataB)
+precData <- distinct(precData, begin_year,begin_month_id, .keep_all= TRUE)
 
 ```
 
