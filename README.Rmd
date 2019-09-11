@@ -16,6 +16,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Use tamboRapi to inq data (take some time)
 
+Data is taken from data set: "Monthly Temperature and Hygric Indices for Central Europe since AD 1500" as provided on tambora.org.
+
+[DOI:10.6094/tambora.org/2019/c493/csv.zip](https://doi.org/10.6094/tambora.org/2019/c493/csv.zip)
+ 
+
 ```{r tambora}
 
 if (!require("devtools")) install.packages("devtools")
